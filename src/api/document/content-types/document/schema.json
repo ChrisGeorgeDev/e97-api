@@ -1,0 +1,50 @@
+{
+  "kind": "collectionType",
+  "collectionName": "investor_documents",
+  "info": {
+    "singularName": "document",
+    "pluralName": "documents",
+    "displayName": "Document",
+    "description": "A document owned by an account (LP agreements, tax slips, reports, etc.)."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": [
+        "Annual Report",
+        "Project Report",
+        "Progress Report",
+        "LP Agreement",
+        "Loan Agreement",
+        "Tax Slip",
+        "Portfolio Report"
+      ],
+      "required": true
+    },
+    "fileType": {
+      "type": "enumeration",
+      "enum": ["PDF", "PPT", "XLS", "CSV", "ZIP", "VIDEO", "OTHER"],
+      "required": true
+    },
+    "file": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["files", "images"]
+    },
+    "account": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::account.account",
+      "inversedBy": "documents",
+      "required": true
+    }
+  }
+}

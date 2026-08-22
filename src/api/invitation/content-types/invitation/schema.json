@@ -1,0 +1,63 @@
+{
+  "kind": "collectionType",
+  "collectionName": "invitations",
+  "info": {
+    "singularName": "invitation",
+    "pluralName": "invitations",
+    "displayName": "Invitation",
+    "description": "An admin-created invite for a new investor user, backed by a Clerk invitation."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "email": {
+      "type": "email",
+      "required": true
+    },
+    "first_name": {
+      "type": "string"
+    },
+    "last_name": {
+      "type": "string"
+    },
+    "account": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::account.account",
+      "inversedBy": "invitations"
+    },
+    "role": {
+      "type": "enumeration",
+      "enum": ["investor", "admin"],
+      "default": "investor"
+    },
+    "invitation_status": {
+      "type": "enumeration",
+      "enum": ["pending", "accepted", "revoked", "expired"],
+      "default": "pending"
+    },
+    "clerk_invitation_id": {
+      "type": "string"
+    },
+    "invitation_url": {
+      "type": "text"
+    },
+    "invited_at": {
+      "type": "datetime"
+    },
+    "invitation_expires_at": {
+      "type": "datetime"
+    },
+    "accepted_at": {
+      "type": "datetime"
+    },
+    "accepted_by_user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "invitation"
+    }
+  }
+}

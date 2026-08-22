@@ -9,6 +9,9 @@ const allowedMediaTypes = [
   'application/vnd.openxmlformats-officedocument.*',
   'text/plain',
   'text/csv',
+  // Self-contained HTML portfolio reports (see src/middlewares/uploads-frame-policy.ts
+  // for the matching frame-embedding fix — both are required for these to display).
+  'text/html',
 ];
 
 const deniedExecutableTypes = [

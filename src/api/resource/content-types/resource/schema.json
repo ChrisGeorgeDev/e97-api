@@ -1,0 +1,41 @@
+{
+  "kind": "collectionType",
+  "collectionName": "resources",
+  "info": {
+    "singularName": "resource",
+    "pluralName": "resources",
+    "displayName": "Resource",
+    "description": "A downloadable file attached to one or more News articles."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": ["Press Release", "Site Photos", "Media Kit", "Other"],
+      "required": true
+    },
+    "fileType": {
+      "type": "enumeration",
+      "enum": ["PDF", "PPT", "XLS", "CSV", "ZIP", "VIDEO", "OTHER"],
+      "required": true
+    },
+    "file": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["files", "images"]
+    },
+    "newsArticles": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::news-article.news-article",
+      "inversedBy": "resources"
+    }
+  }
+}

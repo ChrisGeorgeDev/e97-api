@@ -1,0 +1,60 @@
+{
+  "kind": "collectionType",
+  "collectionName": "accounts",
+  "info": {
+    "singularName": "account",
+    "pluralName": "accounts",
+    "displayName": "Account",
+    "description": "An investor entity (company/household) that owns portal data and can have multiple linked users."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "accessCategories": {
+      "type": "json",
+      "default": []
+    },
+    "users": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "plugin::users-permissions.user",
+      "mappedBy": "account"
+    },
+    "investments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::investment.investment",
+      "mappedBy": "account"
+    },
+    "documents": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::document.document",
+      "mappedBy": "account"
+    },
+    "portfolioReports": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::portfolio-report.portfolio-report",
+      "mappedBy": "account"
+    },
+    "properties": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::property.property",
+      "mappedBy": "account"
+    },
+    "invitations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::invitation.invitation",
+      "mappedBy": "account"
+    }
+  }
+}

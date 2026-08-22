@@ -1,0 +1,54 @@
+{
+  "kind": "collectionType",
+  "collectionName": "projects",
+  "info": {
+    "singularName": "project",
+    "pluralName": "projects",
+    "displayName": "Project",
+    "description": "A shared real-estate development. Not owned by a single account — visibility is derived via Investment relations."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "subtitle": {
+      "type": "string"
+    },
+    "phase": {
+      "type": "enumeration",
+      "enum": [
+        "Pre-Development",
+        "Under Construction",
+        "Fully Realized"
+      ]
+    },
+    "progress": {
+      "type": "integer",
+      "min": 0,
+      "max": 100
+    },
+    "highlight": {
+      "type": "string"
+    },
+    "description": {
+      "type": "richtext"
+    },
+    "investments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::investment.investment",
+      "mappedBy": "project"
+    },
+    "newsArticles": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::news-article.news-article",
+      "mappedBy": "projects"
+    }
+  }
+}
