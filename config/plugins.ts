@@ -36,6 +36,21 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Plugin =>
   },
   upload: {
     config: {
+      // strapi-provider-upload-azure-sa: only community Azure Blob Storage
+      // provider available (Strapi ships no official one). Auth mode is
+      // whichever of accountKey/sasToken is non-empty — see the package's
+      // src/azure-client.ts: a truthy sasToken takes priority over
+      // accountKey. Until real Azure credentials are filled in below,
+      // uploads will fail — same accepted gap as the blank Resend/Clerk
+      // secrets elsewhere in this repo.
+      provider: 'strapi-provider-upload-azure-sa',
+      providerOptions: {
+        account: env('AZURE_STORAGE_ACCOUNT'),
+        accountKey: env('AZURE_STORAGE_ACCOUNT_KEY'),
+        sasToken: env('AZURE_STORAGE_SAS_TOKEN'),
+        containerName: env('AZURE_STORAGE_CONTAINER'),
+        defaultPath: 'uploads',
+      },
       security: {
         allowedTypes: allowedMediaTypes,
         deniedTypes: deniedExecutableTypes,

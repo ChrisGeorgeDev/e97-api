@@ -460,9 +460,9 @@ export interface ApiAccountAccount extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     documents: Schema.Attribute.Relation<'oneToMany', 'api::document.document'>;
-    investments: Schema.Attribute.Relation<
+    interestRegistrations: Schema.Attribute.Relation<
       'oneToMany',
-      'api::investment.investment'
+      'api::interest-registration.interest-registration'
     >;
     invitations: Schema.Attribute.Relation<
       'oneToMany',
@@ -542,33 +542,88 @@ export interface ApiDocumentDocument extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiInvestmentInvestment extends Struct.CollectionTypeSchema {
-  collectionName: 'investments';
+export interface ApiInterestRegistrationInterestRegistration
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'interest_registrations';
   info: {
-    description: "Join between a Project and an Account, carrying that account's own numbers for the project.";
-    displayName: 'Investment';
-    pluralName: 'investments';
-    singularName: 'investment';
+    description: "An account's indication of interest in an Investment Opportunity, with the total dollar amount they're willing to commit. Created only via the custom create action (src/api/interest-registration/controllers) \u2014 account and investorUser are always derived server-side from the authenticated user, never trusted from the request.";
+    displayName: 'Interest Registration';
+    pluralName: 'interest-registrations';
+    singularName: 'interest-registration';
   };
   options: {
     draftAndPublish: false;
   };
   attributes: {
-    account: Schema.Attribute.Relation<'manyToOne', 'api::account.account'>;
-    costToDate: Schema.Attribute.String;
+    account: Schema.Attribute.Relation<'manyToOne', 'api::account.account'> &
+      Schema.Attribute.Required;
+    acknowledgedCapitalCalls: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<false>;
+    amount: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0.01;
+        },
+        number
+      >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    investorUser: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    > &
+      Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
-      'api::investment.investment'
+      'api::interest-registration.interest-registration'
     > &
       Schema.Attribute.Private;
-    project: Schema.Attribute.Relation<'manyToOne', 'api::project.project'>;
+    opportunity: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::investment-opportunity.investment-opportunity'
+    > &
+      Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
-    targetRoi: Schema.Attribute.String;
-    totalBudget: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiInvestmentOpportunityInvestmentOpportunity
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'investment_opportunities';
+  info: {
+    description: 'A new investment opportunity broadcast to every logged-in investor. Unpublishing removes it from the portal.';
+    displayName: 'Investment Opportunity';
+    pluralName: 'investment-opportunities';
+    singularName: 'investment-opportunity';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    excerpt: Schema.Attribute.Text & Schema.Attribute.Required;
+    interestRegistrations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::interest-registration.interest-registration'
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::investment-opportunity.investment-opportunity'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    tag: Schema.Attribute.String;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -739,7 +794,7 @@ export interface ApiPortfolioReportPortfolioReport
 export interface ApiProjectProject extends Struct.CollectionTypeSchema {
   collectionName: 'projects';
   info: {
-    description: 'A shared real-estate development. Not owned by a single account \u2014 visibility is derived via Investment relations.';
+    description: 'A shared real-estate development update, visible to every logged-in investor.';
     displayName: 'Project';
     pluralName: 'projects';
     singularName: 'project';
@@ -748,15 +803,12 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
+    costToDate: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     description: Schema.Attribute.RichText;
     highlight: Schema.Attribute.String;
-    investments: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::investment.investment'
-    >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -781,6 +833,8 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
       >;
     publishedAt: Schema.Attribute.DateTime;
     subtitle: Schema.Attribute.String;
+    targetRoi: Schema.Attribute.String;
+    totalBudget: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1388,7 +1442,8 @@ declare module '@strapi/strapi' {
       'admin::user': AdminUser;
       'api::account.account': ApiAccountAccount;
       'api::document.document': ApiDocumentDocument;
-      'api::investment.investment': ApiInvestmentInvestment;
+      'api::interest-registration.interest-registration': ApiInterestRegistrationInterestRegistration;
+      'api::investment-opportunity.investment-opportunity': ApiInvestmentOpportunityInvestmentOpportunity;
       'api::invitation.invitation': ApiInvitationInvitation;
       'api::news-article.news-article': ApiNewsArticleNewsArticle;
       'api::news-category.news-category': ApiNewsCategoryNewsCategory;

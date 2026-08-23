@@ -1,0 +1,46 @@
+{
+  "kind": "collectionType",
+  "collectionName": "interest_registrations",
+  "info": {
+    "singularName": "interest-registration",
+    "pluralName": "interest-registrations",
+    "displayName": "Interest Registration",
+    "description": "An account's indication of interest in an Investment Opportunity, with the total dollar amount they're willing to commit. Created only via the custom create action (src/api/interest-registration/controllers) — account and investorUser are always derived server-side from the authenticated user, never trusted from the request."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "amount": {
+      "type": "decimal",
+      "required": true,
+      "min": 0.01
+    },
+    "acknowledgedCapitalCalls": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    "opportunity": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::investment-opportunity.investment-opportunity",
+      "inversedBy": "interestRegistrations",
+      "required": true
+    },
+    "account": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::account.account",
+      "inversedBy": "interestRegistrations",
+      "required": true
+    },
+    "investorUser": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "required": true
+    }
+  }
+}

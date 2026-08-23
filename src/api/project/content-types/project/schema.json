@@ -5,7 +5,7 @@
     "singularName": "project",
     "pluralName": "projects",
     "displayName": "Project",
-    "description": "A shared real-estate development. Not owned by a single account — visibility is derived via Investment relations."
+    "description": "A shared real-estate development update, visible to every logged-in investor."
   },
   "options": {
     "draftAndPublish": false
@@ -32,17 +32,20 @@
       "min": 0,
       "max": 100
     },
+    "targetRoi": {
+      "type": "string"
+    },
+    "totalBudget": {
+      "type": "string"
+    },
+    "costToDate": {
+      "type": "string"
+    },
     "highlight": {
       "type": "string"
     },
     "description": {
       "type": "richtext"
-    },
-    "investments": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::investment.investment",
-      "mappedBy": "project"
     },
     "newsArticles": {
       "type": "relation",

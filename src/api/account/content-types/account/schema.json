@@ -26,12 +26,6 @@
       "target": "plugin::users-permissions.user",
       "mappedBy": "account"
     },
-    "investments": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::investment.investment",
-      "mappedBy": "account"
-    },
     "documents": {
       "type": "relation",
       "relation": "oneToMany",
@@ -54,6 +48,12 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::invitation.invitation",
+      "mappedBy": "account"
+    },
+    "interestRegistrations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::interest-registration.interest-registration",
       "mappedBy": "account"
     }
   }

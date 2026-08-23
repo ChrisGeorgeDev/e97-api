@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "investment_opportunities",
+  "info": {
+    "singularName": "investment-opportunity",
+    "pluralName": "investment-opportunities",
+    "displayName": "Investment Opportunity",
+    "description": "A new investment opportunity broadcast to every logged-in investor. Unpublishing removes it from the portal."
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "excerpt": {
+      "type": "text",
+      "required": true
+    },
+    "tag": {
+      "type": "string"
+    },
+    "interestRegistrations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::interest-registration.interest-registration",
+      "mappedBy": "opportunity"
+    }
+  }
+}
