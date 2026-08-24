@@ -57,6 +57,16 @@ export async function streamAzureFileToCtx(
   }
 
   ctx.set('Content-Type', contentType ?? downloadResponse.contentType ?? 'application/octet-stream');
-  ctx.set('Content-Disposition', `${disposition}; filename="${filename.replace(/"/g, "'")}"`);
+  // filename comes from admin-entered content (e.g. a document title) and can
+  // contain characters outside the range Node's raw header validator allows
+  // (em dashes, curly quotes, etc. copy-pasted from Word/Docs), which throws
+  // ERR_INVALID_CHAR and 500s the request. Strip those for the plain
+  // `filename` fallback and carry the real name via the RFC 6266 extended
+  // `filename*` parameter instead, which every modern browser honors.
+  const asciiFilename = filename.replace(/[^\x20-\x7e]/g, '').replace(/"/g, "'").trim() || 'download';
+  ctx.set(
+    'Content-Disposition',
+    `${disposition}; filename="${asciiFilename}"; filename*=UTF-8''${encodeURIComponent(filename)}`
+  );
   ctx.body = downloadResponse.readableStreamBody;
 }
