@@ -16,9 +16,16 @@
       "type": "string",
       "required": true
     },
-    "accessCategories": {
-      "type": "json",
-      "default": []
+    "e97ID": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "accountCategories": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::account-category.account-category",
+      "inversedBy": "accounts"
     },
     "users": {
       "type": "relation",

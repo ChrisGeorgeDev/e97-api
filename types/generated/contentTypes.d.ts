@@ -443,6 +443,44 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiAccountCategoryAccountCategory
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'account_categories';
+  info: {
+    description: 'A tag applied to Accounts (e.g. Investor, Owner, Lender) controlling its badge color in the portal.';
+    displayName: 'Account Category';
+    pluralName: 'account-categories';
+    singularName: 'account-category';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    accounts: Schema.Attribute.Relation<'manyToMany', 'api::account.account'>;
+    badgeVariant: Schema.Attribute.Enumeration<
+      ['gold', 'blue', 'green', 'amber', 'red']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'gold'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::account-category.account-category'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiAccountAccount extends Struct.CollectionTypeSchema {
   collectionName: 'accounts';
   info: {
@@ -455,11 +493,17 @@ export interface ApiAccountAccount extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
-    accessCategories: Schema.Attribute.JSON & Schema.Attribute.DefaultTo<[]>;
+    accountCategories: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::account-category.account-category'
+    >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     documents: Schema.Attribute.Relation<'oneToMany', 'api::document.document'>;
+    e97ID: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
     interestRegistrations: Schema.Attribute.Relation<
       'oneToMany',
       'api::interest-registration.interest-registration'
@@ -689,6 +733,7 @@ export interface ApiNewsArticleNewsArticle extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    author: Schema.Attribute.String;
     body: Schema.Attribute.RichText & Schema.Attribute.Required;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -844,7 +889,7 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
 export interface ApiPropertyProperty extends Struct.CollectionTypeSchema {
   collectionName: 'properties';
   info: {
-    description: 'A managed property owned by an account.';
+    description: "A managed property owned by an account, used to generate the sidebar's external portal link.";
     displayName: 'Property';
     pluralName: 'properties';
     singularName: 'property';
@@ -864,13 +909,8 @@ export interface ApiPropertyProperty extends Struct.CollectionTypeSchema {
       'api::property.property'
     > &
       Schema.Attribute.Private;
-    managedBy: Schema.Attribute.String;
-    paymentMethod: Schema.Attribute.String;
-    paymentStatus: Schema.Attribute.String;
-    portalUrl: Schema.Attribute.String;
+    portalUrl: Schema.Attribute.String & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
-    rent: Schema.Attribute.Decimal;
-    tenant: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1440,6 +1480,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::account-category.account-category': ApiAccountCategoryAccountCategory;
       'api::account.account': ApiAccountAccount;
       'api::document.document': ApiDocumentDocument;
       'api::interest-registration.interest-registration': ApiInterestRegistrationInterestRegistration;

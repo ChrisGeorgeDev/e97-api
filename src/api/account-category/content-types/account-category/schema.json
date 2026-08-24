@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "account_categories",
+  "info": {
+    "singularName": "account-category",
+    "pluralName": "account-categories",
+    "displayName": "Account Category",
+    "description": "A tag applied to Accounts (e.g. Investor, Owner, Lender) controlling its badge color in the portal."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "badgeVariant": {
+      "type": "enumeration",
+      "enum": ["gold", "blue", "green", "amber", "red"],
+      "required": true,
+      "default": "gold"
+    },
+    "accounts": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::account.account",
+      "mappedBy": "accountCategories"
+    }
+  }
+}

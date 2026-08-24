@@ -33,6 +33,9 @@
       "type": "date",
       "required": true
     },
+    "author": {
+      "type": "string"
+    },
     "projects": {
       "type": "relation",
       "relation": "manyToMany",

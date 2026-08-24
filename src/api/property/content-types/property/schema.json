@@ -5,7 +5,7 @@
     "singularName": "property",
     "pluralName": "properties",
     "displayName": "Property",
-    "description": "A managed property owned by an account."
+    "description": "A managed property owned by an account, used to generate the sidebar's external portal link."
   },
   "options": {
     "draftAndPublish": false
@@ -16,23 +16,9 @@
       "type": "string",
       "required": true
     },
-    "tenant": {
-      "type": "string"
-    },
-    "rent": {
-      "type": "decimal"
-    },
-    "paymentMethod": {
-      "type": "string"
-    },
-    "paymentStatus": {
-      "type": "string"
-    },
-    "managedBy": {
-      "type": "string"
-    },
     "portalUrl": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "account": {
       "type": "relation",

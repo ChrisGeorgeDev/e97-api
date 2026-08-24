@@ -3,7 +3,11 @@ import type { Core } from '@strapi/strapi';
 import { isDatabaseClientKind } from '@strapi/database';
 
 const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Database => {
-  const client = env('DATABASE_CLIENT', 'sqlite');
+  // Local dev defaults to sqlite (zero setup); production defaults to
+  // postgres without needing DATABASE_CLIENT set explicitly, as long as the
+  // host sets the standard NODE_ENV=production. DATABASE_CLIENT still wins
+  // if explicitly set, for the rare case either default needs overriding.
+  const client = env('DATABASE_CLIENT', process.env.NODE_ENV === 'production' ? 'postgres' : 'sqlite');
 
   if (!isDatabaseClientKind(client)) {
     throw new Error(

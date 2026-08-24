@@ -15,12 +15,14 @@
     "upgrade:dry": "npx @strapi/upgrade latest --dry"
   },
   "dependencies": {
+    "@azure/storage-blob": "^12.33.0",
     "@clerk/backend": "^3.16.9",
     "@strapi/database": "5.52.1",
     "@strapi/plugin-cloud": "5.52.1",
     "@strapi/plugin-users-permissions": "5.52.1",
     "@strapi/strapi": "5.52.1",
     "better-sqlite3": "12.8.0",
+    "pg": "^8.23.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.30.3",

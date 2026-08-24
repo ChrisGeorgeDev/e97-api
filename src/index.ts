@@ -1,5 +1,9 @@
 import type { Core } from '@strapi/strapi';
+import { errors } from '@strapi/utils';
+
 import { verifyClerkSessionToken } from './utils/clerk-verify';
+
+const { ForbiddenError, UnauthorizedError } = errors;
 
 export default {
   /**
@@ -41,6 +45,33 @@ export default {
 
         ctx.state.user = user;
         return { authenticated: true, credentials: user, ability };
+      },
+
+      /**
+       * Without this, Strapi's core authService.verify() silently no-ops for
+       * every Clerk-authenticated request — it only invokes strategy.verify
+       * if the strategy defines one (see @strapi/core's services/auth/index.js).
+       * That means the Authenticated role's permission checkboxes (Settings →
+       * Users & Permissions → Roles) were never actually enforced for ANY
+       * Clerk-authenticated user, on any action — core or custom — only
+       * whatever policies happened to be attached (e.g. account-scoping)
+       * were doing any gating. Mirrors the official content-api-token
+       * strategy's verify() (@strapi/admin's strategies/content-api-token.js)
+       * — every content-api route gets an auto-generated required scope
+       * (e.g. `api::document.document.download`) via
+       * @strapi/core's register-routes.js, regardless of whether the route
+       * was created via createCoreRouter or a plain custom route file.
+       */
+      verify: async (auth: any, config: any) => {
+        const { credentials: user, ability } = auth;
+        if (!user) throw new UnauthorizedError();
+        if (!config?.scope) return;
+
+        if (!ability) throw new ForbiddenError();
+        const scopes = Array.isArray(config.scope) ? config.scope : [config.scope];
+        if (!scopes.every((scope: string) => ability.can(scope))) {
+          throw new ForbiddenError();
+        }
       },
     });
   },
