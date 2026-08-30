@@ -1,0 +1,61 @@
+# Exported from Render on 2026-08-30T19:05:12Z
+version: "1"
+projects:
+- name: Inv Portal
+  environments:
+  - name: Production
+    services:
+    - type: web
+      name: e97-api
+      runtime: node
+      repo: https://github.com/ChrisGeorgeDev/e97-api
+      plan: free
+      envVars:
+      - key: INVESTOR_PORTAL_URL
+        sync: false
+      - key: CLERK_WEBHOOK_SIGNING_SECRET
+        sync: false
+      - key: CLERK_AUTHORIZED_PARTIES
+        sync: false
+      - key: CLERK_JWT_KEY
+        sync: false
+      - key: CLERK_SECRET_KEY
+        sync: false
+      - key: AZURE_STORAGE_CONTAINER
+        sync: false
+      - key: AZURE_STORAGE_SAS_TOKEN
+        sync: false
+      - key: AZURE_STORAGE_ACCOUNT_KEY
+        sync: false
+      - key: AZURE_STORAGE_ACCOUNT
+        sync: false
+      - key: ENCRYPTION_KEY
+        sync: false
+      - key: TRANSFER_TOKEN_SALT
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: ADMIN_JWT_SECRET
+        sync: false
+      - key: API_TOKEN_SALT
+        sync: false
+      - key: APP_KEYS
+        sync: false
+      - key: DATABASE_PASSWORD
+        sync: false
+      - key: DATABASE_USERNAME
+        sync: false
+      - key: DATABASE_NAME
+        sync: false
+      - key: DATABASE_PORT
+        sync: false
+      - key: DATABASE_HOST
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_CLIENT
+        sync: false
+      region: virginia
+      buildCommand: npm install; npm run build
+      startCommand: npm run start
+      autoDeployTrigger: commit
